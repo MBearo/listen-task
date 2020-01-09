@@ -1,4 +1,4 @@
-# listen-task
+# node-ipc
 
 将通过事件回调的进程间通讯的方式，封装为 Promise，方便在流式的请求中使用。
 
