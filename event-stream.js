@@ -1,23 +1,29 @@
 let id = 0
 
-exports.receive = function ({ instance, dispatchFun, receiveFun }, cb) {
-  const warpper = function (...arg) {
-    instance[dispatchFun](...arg)
-  }
+exports.receive = function (config, cb) {
+  let { instance, dispatchFun = 'send', receiveFun = 'message' } = config
+  instance = instance || config
   instance.on(receiveFun, msg => {
-    cb(msg.__msg, msg, warpper)
+    cb(msg.__msg, msg, arg => {
+      instance[dispatchFun]({
+        __id: msg.__id,
+        __msg: arg
+      })
+    })
   })
 }
-exports.dispatch = function ({ instance, dispatchFun, receiveFun, msg }) {
+exports.dispatch = function ({ instance, dispatchFun = 'send', receiveFun = 'message', msg }) {
   id++
   instance[dispatchFun]({
     __id: id,
     __msg: msg
   })
   return new Promise(resolve => {
-    let cb = content => {
-      resolve(content);
-      instance.off(receiveFun, cb)
+    let cb = ({ __id, __msg }) => {
+      if (__id === id) {
+        resolve(__msg);
+        instance.off(receiveFun, cb)
+      }
     }
     instance.on(receiveFun, cb)
   })

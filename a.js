@@ -12,25 +12,9 @@ for (const key in cluster.workers) {
   }
 }
 
-// let id=0
 app.use(async ctx => {
-  // id++
-  // workerList[0].send({
-  //   __id:id,
-  //   __msg:new Date().getTime()
-  // })
-  // let res = await new Promise(resolve => {
-  //   let cb = e => {
-  //     resolve(e);
-  //     workerList[0].off('message', cb)
-  //   }
-  //   workerList[0].on('message', cb)
-  // })
-
   const res = await dispatch({
     instance: workerList[0],
-    dispatchFun: 'send',
-    receiveFun: 'message',
     msg: new Date().getTime()
   })
   ctx.body = {
