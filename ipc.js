@@ -13,6 +13,7 @@ exports.receive = function (config, cb) {
   })
 }
 exports.dispatch = function ({ instance, dispatchFun = 'send', receiveFun = 'message', msg }) {
+  if (id > 10000)id = 0
   id++
   instance[dispatchFun]({
     __id: id,
